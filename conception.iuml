@@ -2,18 +2,26 @@
 actor Utilisateur
 boundary Programme
 entity ArgumentParser
+entity readCSV
 entity average
 entity variance
 entity standardDeviation
 
-Utilisateur --> Programme : << fichier csv >>
-Programme --> ArgumentParser : Demande du CSV
-Programme <-- ArgumentParser : Fichier CSV
-Programme --> average
-Programme <-- average : Moyenne
-Programme --> variance
+Utilisateur -> Programme : python calculator.py file.csv
+Programme -> ArgumentParser : Demande du CSV
+Programme <-- ArgumentParser : csvFile
+|||
+Programme -> readCSV : readCSV(csvFile)
+Programme <-- readCSV : dataset
+|||
+Programme -> average : average(dataset) 
+Programme <-- average : Average
+|||
+Programme -> variance : variance(dataset, average)
 Programme <-- variance : Variance
-Programme --> standardDeviation
-Programme <-- standardDeviation : Écart type
-Utilisateur <-- Programme : Variance, Moyenne, Écart-Type
+|||
+Programme -> standardDeviation : standardDeviation(variance)
+Programme <-- standardDeviation : StandardDeviation
+|||
+Utilisateur <-- Programme : Average, Variance, StandardDeviation
 @enduml
