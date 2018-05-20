@@ -1,0 +1,19 @@
+@startuml
+actor Utilisateur
+boundary Programme
+entity ArgumentParser
+entity average
+entity variance
+entity standardDeviation
+
+Utilisateur --> Programme : << fichier csv >>
+Programme --> ArgumentParser : Demande du CSV
+Programme <-- ArgumentParser : Fichier CSV
+Programme --> average
+Programme <-- average : Moyenne
+Programme --> variance
+Programme <-- variance : Variance
+Programme --> standardDeviation
+Programme <-- standardDeviation : Écart type
+Utilisateur <-- Programme : Variance, Moyenne, Écart-Type
+@enduml
