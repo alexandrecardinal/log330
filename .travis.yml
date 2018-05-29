@@ -3,4 +3,6 @@ python:
   - "2.7"
 
 script:
-  - py.test 
+  - python tests/test-average.py
+  - python tests/test-variance.py
+  - python tests/test-standard-deviation.py
