@@ -5,8 +5,8 @@ sys.path.append(
 import calculator
 import unittest
 
-MAX_VALUE = sys.maxint
-MIN_VALUE = -sys.maxint - 1
+MAX_VALUE = 2147483647
+MIN_VALUE = -2147483648
 
 class TestVariance(unittest.TestCase):
 
