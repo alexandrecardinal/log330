@@ -27,30 +27,32 @@ def average(dataset):
   return avg
 
 
-def variance(dataset, average):
+def variance(dataset):
   distanceSum = 0
+  avg = average(dataset)
 
   for value in dataset:
-    distanceWithAverage = value - average
+    distanceWithAverage = value - avg
     squaredDistance = distanceWithAverage * distanceWithAverage
     distanceSum += squaredDistance
 
-  variance = distanceSum / (len(dataset) - 1)
-  return variance
+  var = distanceSum / (len(dataset) - 1)
+  return var
 
-def standardDeviation(variance):
-  return math.sqrt(variance)
+def standardDeviation(dataset):
+  var = variance(dataset)
+  return math.sqrt(var)
 
 if __name__ == "__main__":
   args = initArguments()
   dataset = readCSV(args.FILE)
   print(dataset)
 
-  average = average(dataset)
-  variance = variance(dataset, average)
-  standardDeviation = standardDeviation(variance)
+  avg = average(dataset)
+  variance = variance(dataset)
+  standardDeviation = standardDeviation(dataset)
 
-  print ("Average: " + str(average))
+  print("Average: " + str(avg))
   print("Variance: " + str(variance))
   print("Standard deviation: " + str(standardDeviation))
 
