@@ -1,0 +1,47 @@
+@startuml
+actor Utilisateur
+boundary Programme
+entity ArgumentParser
+entity readCSV
+entity validateFile
+entity validateTuples
+entity correlation
+entity add
+entity computeCorrelationFormula
+
+Utilisateur -> Programme : python calculator.py file.csv --variance
+Programme -> ArgumentParser : Demande du CSV
+Programme <-- ArgumentParser : csvFile
+|||
+Programme -> readCSV : readTuplesCSV(csvFile)
+readCSV -> validateFile
+readCSV <-- validateFile : OK
+readCSV -> validateTuples
+readCSV <-- validateTuples : OK
+Programme <-- readCSV : dataset
+|||
+Programme -> correlation : correlation(dataset) 
+|||
+loop len(dataset)
+  correlation -> add : add(sumX, dataset[i, 0])
+  correlation <-- add : sumX
+
+  correlation -> add : add(sumY, dataset[i, 1])
+  correlation <-- add : sumY
+
+  correlation -> add : add(sumXY, dataset[i, 0] * dataset[i, 1])
+  correlation <-- add : sumXY
+
+  correlation -> add : add(sumXX, dataset[i, 0] * dataset[i, 0])
+  correlation <-- add : sumXX
+
+  correlation -> add : add(sumYY, dataset[i, 1] * dataset[i, 1])
+  correlation <-- add : sumYY
+  end
+correlation -> computeCorrelationFormula : computeCorrelationFormula(len(dataset), sumX, sumXY, sumXX, sumXY)
+correlation <-- computeCorrelationFormula : Correlation
+
+Programme <-- correlation : Correlation
+
+Utilisateur <-- Programme : Correlation
+@enduml

@@ -21,7 +21,7 @@ class TestVariance(unittest.TestCase):
     self.assertEqual(variance, 1537228671377473536L)
 
   def testInvalidVariance(self):
-    dataset = ["ok", 2, 3, 4, 5, 6]
+    dataset = ['ok', 2, 3, 4, 5, 6]
     with self.assertRaises(Exception):
       variance = calculator.variance(dataset)
 

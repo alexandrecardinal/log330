@@ -21,7 +21,7 @@ class TestStandardDeviation(unittest.TestCase):
     self.assertEqual(standardDeviation, 1239850261.6757693)
 
   def testInvalidStandardDeviation(self):
-    dataset = ["ok", 2, 3, 4, 5, 6]
+    dataset = ['ok', 2, 3, 4, 5, 6]
     with self.assertRaises(Exception):
       standardDeviation = calculator.standardDeviation(dataset)
 

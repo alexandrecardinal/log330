@@ -6,3 +6,4 @@ script:
   - python tests/test-average.py
   - python tests/test-variance.py
   - python tests/test-standard-deviation.py
+  - python tests/test-correlation.py
