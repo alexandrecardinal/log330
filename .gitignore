@@ -1,0 +1,5 @@
+*.xlsx
+*.zip
+travis*.png
+__pycache__
+*.pyc

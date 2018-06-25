@@ -91,7 +91,7 @@ def computeCorrelationFormula(n, sumX, sumY, sumXY, sumXX, sumYY):
   top = (n * sumXY - sumX * sumY)
   middle = (n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY)
   bottom = (math.sqrt(middle))
-  
+
   if bottom == 0:
     return 0
 
@@ -121,4 +121,3 @@ if __name__ == '__main__':
     print('Average: ' + str(avg))
     print('Variance: ' + str(variance))
     print('Standard deviation: ' + str(standardDeviation))
-
