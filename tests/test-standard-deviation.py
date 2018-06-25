@@ -18,7 +18,7 @@ class TestStandardDeviation(unittest.TestCase):
   def testUpperBoundStandardDeviation(self):
     dataset = [MAX_VALUE, 0, 0]
     standardDeviation = calculator.standardDeviation(dataset)
-    self.assertEqual(standardDeviation, 1239850261.6757693)
+    self.assertEqual(round(standardDeviation, 3), 1239850261.676)
 
   def testInvalidStandardDeviation(self):
     dataset = ['ok', 2, 3, 4, 5, 6]
@@ -28,7 +28,7 @@ class TestStandardDeviation(unittest.TestCase):
   def testNormalStandardDeviation(self):
     dataset = [1, 10, 1, 10, 1 , 10]
     standardDeviation = calculator.standardDeviation(dataset)
-    self.assertEqual(standardDeviation, 4.898979485566356)
+    self.assertEqual(round(standardDeviation, 3), 4.93)
 
 if __name__ == '__main__':
     unittest.main()
