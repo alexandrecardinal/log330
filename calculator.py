@@ -10,6 +10,9 @@ def initArguments():
   parser.add_argument('--correlation', action="store_true",\
     help='Calculate the correlation instead of the average, variance and \
     standard deviation.')
+  parser.add_argument('--linear-regression', action="store_true",\
+    help='Calculate the linear regression instead of the average, variance and \
+    standard deviation.')
 
   return parser.parse_args()
 
@@ -71,6 +74,38 @@ def standardDeviation(dataset):
   var = variance(dataset)
   return math.sqrt(var)
 
+def linearRegression(dataset):
+  sumX = 0
+  sumY = 0
+  sumXY = 0
+  sumXX = 0
+  sumYY = 0
+  for i in dataset:
+    sumX += i[0]
+    sumY += i[1]
+
+    sumXX += i[0] * i[0]
+    sumXY += i[0] * i[1]
+
+  return computeLinearRegressionFormula(len(dataset), sumX, sumY, sumXY, sumXX)
+
+def computeLinearRegressionFormula(n, sumX, sumY, sumXY, sumXX):
+  if n == 0:
+    return (0, 0)
+  meanX = sumX / n
+  meanY = sumY / n
+
+  topB1 = sumXY - ( n * meanX * meanY)
+  bottomB1 = sumXX - ( n * (meanX * meanX))
+  
+  if bottomB1 == 0:
+    bottomB1 = 1
+
+  b1 = topB1 / bottomB1
+  b0 = meanY - (b1 * meanX)
+
+  return (b0, b1)
+
 def correlation(dataset):
   sumX = 0
   sumY = 0
@@ -104,11 +139,17 @@ def computeCorrelationFormula(n, sumX, sumY, sumXY, sumXX, sumYY):
 if __name__ == '__main__':
   args = initArguments()
   isCorrelation = args.correlation
+  isLinearRegression = args.linear_regression
 
   if isCorrelation:
     dataset = readTuplesCSV(args.FILE)
     corr = correlation(dataset)
     print("Correlation: " + str(corr))
+
+  elif isLinearRegression:
+    dataset = readTuplesCSV(args.FILE)
+    linReg = linearRegression(dataset)
+    print("Linear regression: b0={b0} ; b1={b1}".format(b0=linReg[0], b1=linReg[1]))
 
   else:
     dataset = readCSV(args.FILE)
