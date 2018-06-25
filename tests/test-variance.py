@@ -13,12 +13,12 @@ class TestVariance(unittest.TestCase):
   def testLowerBoundVariance(self):
     dataset = [MIN_VALUE, MIN_VALUE, 0, 0, 10]
     variance = calculator.variance(dataset)
-    self.assertEqual(variance, 1383505809823183688L)
+    self.assertEqual(variance, 1383505809823183688)
 
   def testUpperBoundVariance(self):
     dataset = [MAX_VALUE, 0, 0]
     variance = calculator.variance(dataset)
-    self.assertEqual(variance, 1537228671377473536L)
+    self.assertEqual(variance, 1537228671377473536)
 
   def testInvalidVariance(self):
     dataset = ['ok', 2, 3, 4, 5, 6]
