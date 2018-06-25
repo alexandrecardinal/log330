@@ -37,10 +37,8 @@ class TestCorrelation(unittest.TestCase):
       (368, 788),
       (961, 1601)
     ]
-    (b0, b1) = calculator.linearRegression(dataset)
-    rounded_b0 = round(b0, 5)
-    rounded_b1 = round(b1, 5)
-    self.assertEqual((rounded_b0, rounded_b1), (-22.55253, 1.72793))
+    linearRegression = calculator.linearRegression(dataset)
+    self.assertEqual(linearRegression, (-22.552532752034267, 1.727932426206986))
 
 if __name__ == '__main__':
     unittest.main()
