@@ -7,3 +7,4 @@ script:
   - python tests/test-variance.py
   - python tests/test-standard-deviation.py
   - python tests/test-correlation.py
+  - python tests/test-linear-regression.py
