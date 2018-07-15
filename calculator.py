@@ -5,6 +5,7 @@ import os.path
 
 
 def initArguments():
+    """ Reads the cmd arguments """
     parser = argparse.ArgumentParser(description='Compute the average, \
     variance and standard deviation OR the correlation')
     parser.add_argument('FILE', type=str, help='The path to the csv file')
@@ -22,6 +23,7 @@ def initArguments():
 
 
 def readCSV(csvPath):
+    """ Reads simple values in a csv file """
     dataset = []
     with open(csvPath, 'r') as csvFile:
         csvReader = csv.reader(csvFile)
@@ -31,6 +33,7 @@ def readCSV(csvPath):
 
 
 def readTuplesCSV(csvPath):
+    """ Reads the tuples in a csv """
     dataset = []
     if os.path.isfile(csvPath):
         with open(csvPath, 'r') as csvFile:
@@ -45,6 +48,7 @@ def readTuplesCSV(csvPath):
 
 
 def readEffortLinesCSV(csvPath):
+    """ Reads the effortlines in a csv file """
     dataset = []
     if os.path.isfile(csvPath):
         with open(csvPath, 'r') as csvFile:
@@ -59,6 +63,7 @@ def readEffortLinesCSV(csvPath):
 
 
 def validateEffortRow(row):
+    """ Validates effort rows and returns sum of Xs with Y as (sumX, Y)"""
     try:
         (name, c1, c2, c3, c4, c5, c6, y) = row
         c1 = float(c1.replace(',', '.'))
@@ -76,6 +81,7 @@ def validateEffortRow(row):
 
 
 def validateTuple(row):
+    """ Validates tuples """
     try:
         (x, y) = row
         x = float(x.replace(',', '.'))
@@ -87,6 +93,7 @@ def validateTuple(row):
 
 
 def average(dataset):
+    """ Computes average from dataset """
     avg = 0
     total = 0
 
@@ -98,6 +105,7 @@ def average(dataset):
 
 
 def variance(dataset):
+    """ Computes variance from dataset """
     distanceSum = 0
     avg = average(dataset)
 
@@ -111,11 +119,13 @@ def variance(dataset):
 
 
 def standardDeviation(dataset):
+    """ Computes standard deviation from dataset """
     var = variance(dataset)
     return math.sqrt(var)
 
 
 def linearRegression(dataset):
+    """ Computes lienar regression from dataset """
     sumX = 0
     sumY = 0
     sumXY = 0
@@ -132,6 +142,9 @@ def linearRegression(dataset):
 
 
 def computeLinearRegressionFormula(n, sumX, sumY, sumXY, sumXX):
+    """ Computes the linear regression from the length of a dataset,
+    it's sum of X, sum of Y, sum of X * Y and sum of X * X 
+    """
     if n == 0:
         return (0, 0)
     meanX = sumX / n
@@ -150,6 +163,7 @@ def computeLinearRegressionFormula(n, sumX, sumY, sumXY, sumXX):
 
 
 def correlation(dataset):
+    """ Computes the correlation in a (x, y) dataset """
     sumX = 0
     sumY = 0
     sumXY = 0
@@ -167,6 +181,7 @@ def correlation(dataset):
 
 
 def computeCorrelationFormula(n, sumX, sumY, sumXY, sumXX, sumYY):
+    """ Computes the correlation for the length of the dataset and the sums """
     top = (n * sumXY - sumX * sumY)
     middle = (n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY)
     bottom = (math.sqrt(middle))
@@ -182,6 +197,7 @@ def computeCorrelationFormula(n, sumX, sumY, sumXY, sumXX, sumYY):
 
 
 if __name__ == '__main__':
+    """ Main function """
     args = initArguments()
     isCorrelation = args.correlation
     isLinearRegression = args.linear_regression
