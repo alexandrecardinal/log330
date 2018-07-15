@@ -6,7 +6,6 @@ entity readCSV
 entity validateFile
 entity validateTuples
 entity linearRegression
-entity average
 entity add
 entity computeLinearRegressionFormula
 
@@ -24,11 +23,11 @@ Programme <-- readCSV : dataset
 Programme -> linearRegression : linearRegression(dataset) 
 |||
 loop len(dataset)
-  linearRegression -> average : average(sumX, dataset[i, 0])
-  linearRegression <-- average : sumX
+  linearRegression -> add : add(sumX, dataset[i, 0])
+  linearRegression <-- add : sumX
 
-  linearRegression -> average : average(sumY, dataset[i, 1])
-  linearRegression <-- average : sumY
+  linearRegression -> add : add(sumY, dataset[i, 1])
+  linearRegression <-- add : sumY
 
   linearRegression -> add : add(sumXY, dataset[i, 0] * dataset[i, 1])
   linearRegression <-- add : sumXY
