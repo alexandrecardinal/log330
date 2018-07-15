@@ -13,6 +13,10 @@ def initArguments():
   parser.add_argument('--linear-regression', action="store_true",\
     help='Calculate the linear regression instead of the average, variance and \
     standard deviation.')
+  parser.add_argument('--correlation-effort', action="store_true",\
+    help='Calculate the correlation between effort spent on the 6 modules and the result \
+    at the mid-term exam instead of the average, variance and standard deviation.')
+
 
   return parser.parse_args()
 
@@ -36,6 +40,36 @@ def readTuplesCSV(csvPath):
     return dataset
   else:
     exit(1, "File not found")
+
+def readEffortLinesCSV(csvPath):
+  dataset = []
+  if os.path.isfile(csvPath):
+    with open(csvPath, 'r') as csvFile:
+      csvReader = csv.reader(csvFile, delimiter=';')
+      for row in csvReader:
+        effortRow = validateEffortRow(row)
+        if effortRow:
+          dataset.append(effortRow)
+    return dataset
+  else:
+    exit(1, "File not found " + csvPath)
+
+
+def validateEffortRow(row):
+  try:
+    (name, c1, c2, c3, c4, c5, c6, y) = row
+    c1 = float(c1.replace(',', '.'))
+    c2 = float(c2.replace(',', '.'))
+    c3 = float(c3.replace(',', '.'))
+    c4 = float(c4.replace(',', '.'))
+    c5 = float(c5.replace(',', '.'))
+    c6 = float(c6.replace(',', '.'))
+    y = float(y.replace(',', '.'))
+    sumX = c1 + c2 + c3 + c4 + c5 + c6
+    return (sumX, y)
+  except Exception as e:
+    print("Ignoring row {csvRow}".format(csvRow=row))
+    return False
 
 def validateTuple(row):
   try:
@@ -140,8 +174,18 @@ if __name__ == '__main__':
   args = initArguments()
   isCorrelation = args.correlation
   isLinearRegression = args.linear_regression
+  isCorrelationEffort = args.correlation_effort
 
-  if isCorrelation:
+  if isCorrelationEffort:
+    dataset = readEffortLinesCSV(args.FILE)
+    corr = correlation(dataset)
+    print("Correlation: " + str(corr))
+    if corr < 0.5:
+      print("La corrélation entre les effort d'un étudiant et sa note est FAIBLE")
+    else:
+      print("La corrélation entre les effort d'un étudiant et sa note est FORTE")
+
+  elif isCorrelation:
     dataset = readTuplesCSV(args.FILE)
     corr = correlation(dataset)
     print("Correlation: " + str(corr))
