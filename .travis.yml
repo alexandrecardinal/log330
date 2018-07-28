@@ -9,4 +9,5 @@ script:
   - python tests/test-correlation.py
   - python tests/test-correlation-effort.py
   - python tests/test-linear-regression.py
+  - python tests/test-confidence-interval.py
   - python tests/test-independant.py

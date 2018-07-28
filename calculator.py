@@ -99,6 +99,8 @@ def average(dataset):
     """ Computes average from dataset """
     avg = 0
     total = 0
+    if len(dataset) == 0:
+        return 0
 
     for value in dataset:
         total += value
@@ -226,9 +228,13 @@ def confidenceInterval(dataset, linearRegression, standardDeviation, confidence,
     listOfX = [row[0] for row in dataset]
     averageX = average(listOfX)
     length = len(dataset)
+    tValue = 0
+    
     if length != 10:
         raise Exception("Size of the dataset must be 10")
-    tValue = 0
+
+    if averageX == 0:
+        return (0, 0)
 
     for pair in dataset:
         x = pair[0]
