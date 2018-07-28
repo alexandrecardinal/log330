@@ -120,6 +120,7 @@ def variance(dataset):
     var = distanceSum / (len(dataset) - 1)
     return var
 
+
 def varianceFromLinearRegression(dataset, linearRegression):
     """ Computes variance from dataset and linearRegression """
     distanceSum = 0
@@ -134,6 +135,7 @@ def varianceFromLinearRegression(dataset, linearRegression):
 
     var = distanceSum / (len(dataset) - 1)
     return var
+
 
 def standardDeviation(dataset, linearRegression):
     """ Computes standard deviation from dataset and linearRegression if provided"""
@@ -221,7 +223,7 @@ def computeCorrelationFormula(n, sumX, sumY, sumXY, sumXX, sumYY):
 def confidenceInterval(dataset, linearRegression, standardDeviation, confidence, estimation):
     """ Computes the confidence interval and returns the interval as a tuple"""
     totalDistance = 0
-    listOfX = [ row[0] for row in dataset]
+    listOfX = [row[0] for row in dataset]
     averageX = average(listOfX)
     length = len(dataset)
     if length != 10:
@@ -234,8 +236,8 @@ def confidenceInterval(dataset, linearRegression, standardDeviation, confidence,
         squaredDistance = distance * distance
         totalDistance += squaredDistance
 
-    squareRoot = math.sqrt(1 + (1 / length) + \
-        ( (estimation - averageX ) * (estimation - averageX) / totalDistance ))
+    squareRoot = math.sqrt(1 + (1 / length) +
+                           ((estimation - averageX) * (estimation - averageX) / totalDistance))
 
     # using two-tails and 8 as liberty degree
     if confidence == 0.9:
@@ -243,7 +245,8 @@ def confidenceInterval(dataset, linearRegression, standardDeviation, confidence,
     elif confidence == 0.7:
         tValue = 1.108
     else:
-        raise Exception("Can't use {invalidConfidence} as confidence, must be 0.9 or 0.7")
+        raise Exception(
+            "Can't use {invalidConfidence} as confidence, must be 0.9 or 0.7")
 
     predictedY = linearRegression[0] + (linearRegression[1] * estimation)
     interval = tValue * standardDeviation * squareRoot
@@ -251,6 +254,7 @@ def confidenceInterval(dataset, linearRegression, standardDeviation, confidence,
     higherInterval = predictedY + interval
 
     return (lowerInterval, higherInterval)
+
 
 if __name__ == '__main__':
     """ Main function """
@@ -260,26 +264,25 @@ if __name__ == '__main__':
     isCorrelationEffort = args.correlation_effort
     isConfidenceInterval = args.confidence
 
-
     if isConfidenceInterval:
         print("Is confidence")
         dataset = readTuplesCSV(args.FILE)
         linReg = linearRegression(dataset)
         standardDeviation = standardDeviation(dataset, linReg)
-        (lower90, higher90) = confidenceInterval(dataset, linReg, standardDeviation, 0.9, 1119)
-        (lower70, higher70) = confidenceInterval(dataset, linReg, standardDeviation, 0.7, 1119)
+        (lower90, higher90) = confidenceInterval(
+            dataset, linReg, standardDeviation, 0.9, 1119)
+        (lower70, higher70) = confidenceInterval(
+            dataset, linReg, standardDeviation, 0.7, 1119)
 
         print(("Avec un pourcentage de certitude de {percentage}%, mon intervalle " +
-             "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
-             "à {percentage}% que la taille de mon projet variera entre {lowerInterval} et " +
-             "{higherInterval} LOC.").format(percentage=90, lowerInterval=lower90, higherInterval=higher90))
-
+               "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
+               "à {percentage}% que la taille de mon projet variera entre {lowerInterval} et " +
+               "{higherInterval} LOC.").format(percentage=90, lowerInterval=lower90, higherInterval=higher90))
 
         print(("Avec un pourcentage de certitude de {percentage}%, mon intervalle " +
-             "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
-             "à {percentage}% que la taille de mon projet variera entre {lowerInterval} et " +
-             "{higherInterval} LOC.").format(percentage=70, lowerInterval=lower70, higherInterval=higher70))
-
+               "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
+               "à {percentage}% que la taille de mon projet variera entre {lowerInterval} et " +
+               "{higherInterval} LOC.").format(percentage=70, lowerInterval=lower70, higherInterval=higher70))
 
     elif isCorrelationEffort:
         dataset = readEffortLinesCSV(args.FILE)
