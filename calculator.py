@@ -18,6 +18,9 @@ def initArguments():
     parser.add_argument('--correlation-effort', action="store_true",
                         help='Calculate the correlation between effort spent on the 6 modules and the result \
     at the mid-term exam instead of the average, variance and standard deviation.')
+    parser.add_argument('--confidence', action="store_true",
+                        help='Calculate the confidence interval for 90% and 70% for \
+                        a given csv file with estimated,real values.')
 
     return parser.parse_args()
 
@@ -105,7 +108,7 @@ def average(dataset):
 
 
 def variance(dataset):
-    """ Computes variance from dataset """
+    """ Computes variance from dataset"""
     distanceSum = 0
     avg = average(dataset)
 
@@ -117,15 +120,34 @@ def variance(dataset):
     var = distanceSum / (len(dataset) - 1)
     return var
 
+def varianceFromLinearRegression(dataset, linearRegression):
+    """ Computes variance from dataset and linearRegression """
+    distanceSum = 0
+    b0 = linearRegression[0]
+    b1 = linearRegression[1]
 
-def standardDeviation(dataset):
-    """ Computes standard deviation from dataset """
-    var = variance(dataset)
+    for pair in dataset:
+        b1_x1 = b1 * pair[0]
+        yi_b0_b1_xi = pair[1] - b0 - b1_x1
+        squaredDistance = yi_b0_b1_xi * yi_b0_b1_xi
+        distanceSum += squaredDistance
+
+    var = distanceSum / (len(dataset) - 1)
+    return var
+
+def standardDeviation(dataset, linearRegression):
+    """ Computes standard deviation from dataset and linearRegression if provided"""
+    var = 0
+    if linearRegression:
+        var = varianceFromLinearRegression(dataset, linearRegression)
+    else:
+        var = variance(dataset, linearRegression)
+
     return math.sqrt(var)
 
 
 def linearRegression(dataset):
-    """ Computes lienar regression from dataset """
+    """ Computes linenar regression from dataset """
     sumX = 0
     sumY = 0
     sumXY = 0
@@ -196,14 +218,70 @@ def computeCorrelationFormula(n, sumX, sumY, sumXY, sumXX, sumYY):
     return corr
 
 
+def confidenceInterval(dataset, linearRegression, standardDeviation, confidence, estimation):
+    """ Computes the confidence interval and returns the interval as a tuple"""
+    totalDistance = 0
+    listOfX = [ row[0] for row in dataset]
+    averageX = average(listOfX)
+    length = len(dataset)
+    if length != 10:
+        raise Exception("Size of the dataset must be 10")
+    tValue = 0
+
+    for pair in dataset:
+        x = pair[0]
+        distance = x - averageX
+        squaredDistance = distance * distance
+        totalDistance += squaredDistance
+
+    squareRoot = math.sqrt(1 + (1 / length) + \
+        ( (estimation - averageX ) * (estimation - averageX) / totalDistance ))
+
+    # using two-tails and 8 as liberty degree
+    if confidence == 0.9:
+        tValue = 1.86
+    elif confidence == 0.7:
+        tValue = 1.108
+    else:
+        raise Exception("Can't use {invalidConfidence} as confidence, must be 0.9 or 0.7")
+
+    predictedY = linearRegression[0] + (linearRegression[1] * estimation)
+    interval = tValue * standardDeviation * squareRoot
+    lowerInterval = predictedY - interval
+    higherInterval = predictedY + interval
+
+    return (lowerInterval, higherInterval)
+
 if __name__ == '__main__':
     """ Main function """
     args = initArguments()
     isCorrelation = args.correlation
     isLinearRegression = args.linear_regression
     isCorrelationEffort = args.correlation_effort
+    isConfidenceInterval = args.confidence
 
-    if isCorrelationEffort:
+
+    if isConfidenceInterval:
+        print("Is confidence")
+        dataset = readTuplesCSV(args.FILE)
+        linReg = linearRegression(dataset)
+        standardDeviation = standardDeviation(dataset, linReg)
+        (lower90, higher90) = confidenceInterval(dataset, linReg, standardDeviation, 0.9, 1119)
+        (lower70, higher70) = confidenceInterval(dataset, linReg, standardDeviation, 0.7, 1119)
+
+        print(("Avec un pourcentage de certitude de {percentage}%, mon intervalle " +
+             "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
+             "à {percentage}% que la taille de mon projet variera entre {lowerInterval} et " +
+             "{higherInterval} LOC.").format(percentage=90, lowerInterval=lower90, higherInterval=higher90))
+
+
+        print(("Avec un pourcentage de certitude de {percentage}%, mon intervalle " +
+             "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
+             "à {percentage}% que la taille de mon projet variera entre {lowerInterval} et " +
+             "{higherInterval} LOC.").format(percentage=70, lowerInterval=lower70, higherInterval=higher70))
+
+
+    elif isCorrelationEffort:
         dataset = readEffortLinesCSV(args.FILE)
         corr = correlation(dataset)
         print("Correlation: " + str(corr))
