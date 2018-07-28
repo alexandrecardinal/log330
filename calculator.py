@@ -139,13 +139,13 @@ def varianceFromLinearRegression(dataset, linearRegression):
     return var
 
 
-def standardDeviation(dataset, linearRegression):
+def standardDeviation(dataset, linearRegression=False):
     """ Computes standard deviation from dataset and linearRegression if provided"""
     var = 0
     if linearRegression:
         var = varianceFromLinearRegression(dataset, linearRegression)
     else:
-        var = variance(dataset, linearRegression)
+        var = variance(dataset)
 
     return math.sqrt(var)
 
