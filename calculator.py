@@ -21,6 +21,8 @@ def initArguments():
     parser.add_argument('--confidence', action="store_true",
                         help='Calculate the confidence interval for 90% and 70% for \
                         a given csv file with estimated,real values.')
+    parser.add_argument("--loc-estimation", help="Your estimation of loc for the confidence interval. Defaults \
+                        to 1119.", type=int)
 
     return parser.parse_args()
 
@@ -229,9 +231,14 @@ def confidenceInterval(dataset, linearRegression, standardDeviation, confidence,
     averageX = average(listOfX)
     length = len(dataset)
     tValue = 0
+    tValue90 = [0, 6.314, 2.92, 2.353, 2.132, 2.015, 1.943, 1.895, 1.860, 
+        1.833, 1.812, 1.796, 1.782, 1.771, 1.761, 1.753, 7.746, 1.740, 1.734]
+    tValue70 = [0, 1.963, 1.386, 1.250, 1.190, 1.156, 1.134, 1.119, 1.108, 
+        1.100, 1.093, 1.088, 1.083, 1.079, 1.076, 1.074, 1.071, 1.069, 1.067, 
+        1.066, 1.064]
     
-    if length != 10:
-        raise Exception("Size of the dataset must be 10")
+    if length < 3 or length > 20:
+        raise Exception("Size of the dataset must be between 3 and 20 (inclusively)")
 
     if averageX == 0:
         return (0, 0)
@@ -247,9 +254,9 @@ def confidenceInterval(dataset, linearRegression, standardDeviation, confidence,
 
     # using two-tails and 8 as liberty degree
     if confidence == 0.9:
-        tValue = 1.86
+        tValue = tValue90[length - 2]
     elif confidence == 0.7:
-        tValue = 1.108
+        tValue = tValue70[length - 2]
     else:
         raise Exception(
             "Can't use {invalidConfidence} as confidence, must be 0.9 or 0.7")
@@ -271,14 +278,18 @@ if __name__ == '__main__':
     isConfidenceInterval = args.confidence
 
     if isConfidenceInterval:
-        print("Is confidence")
+        estimation = 1119
+        print(args.loc_estimation)
+        if args.loc_estimation != None:
+            estimation = args.loc_estimation
+
         dataset = readTuplesCSV(args.FILE)
         linReg = linearRegression(dataset)
         standardDeviation = standardDeviation(dataset, linReg)
         (lower90, higher90) = confidenceInterval(
-            dataset, linReg, standardDeviation, 0.9, 1119)
+            dataset, linReg, standardDeviation, 0.9, estimation)
         (lower70, higher70) = confidenceInterval(
-            dataset, linReg, standardDeviation, 0.7, 1119)
+            dataset, linReg, standardDeviation, 0.7, estimation)
 
         print(("Avec un pourcentage de certitude de {percentage}%, mon intervalle " +
                "varie de {lowerInterval} à {higherInterval}. Ce qui fait que je suis certain " +
